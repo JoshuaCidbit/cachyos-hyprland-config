@@ -1,2 +1,2 @@
 # cachyos-hyprland-config
-configuracionespropias para hyprland
+configuraciones propias para hyprland con caelestia
