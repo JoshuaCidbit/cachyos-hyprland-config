@@ -1,2 +1,2 @@
 # cachyos-hyprland-config
-dotifles propias para hyprland
+configuracionespropias para hyprland
