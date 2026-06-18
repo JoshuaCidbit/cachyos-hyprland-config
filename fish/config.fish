@@ -40,9 +40,9 @@ if status is-interactive
     source ~/.config/caelestia/user-config.fish 2> /dev/null
 end
 # Flatpak path configuration
-set -x XDG_DATA_DIRS /var/lib/flatpak/exports/share /home/joshua/.local/share/flatpak/exports/share $XDG_DATA_DIRS
+set -x XDG_DATA_DIRS /var/lib/flatpak/exports/share $HOME/.local/share/flatpak/exports/share $XDG_DATA_DIRS
 
 # Added by LM Studio CLI (lms)
-set -gx PATH $PATH /home/joshua/.lmstudio/bin
+set -gx PATH $PATH $HOME/.lmstudio/bin
 # End of LM Studio CLI section
 
