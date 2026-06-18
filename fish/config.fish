@@ -46,3 +46,5 @@ set -x XDG_DATA_DIRS /var/lib/flatpak/exports/share $HOME/.local/share/flatpak/e
 set -gx PATH $PATH $HOME/.lmstudio/bin
 # End of LM Studio CLI section
 
+    abbr lmstudio 'nohup env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia lm-studio > /dev/null 2>&1 &'
+
