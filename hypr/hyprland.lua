@@ -106,3 +106,7 @@ hl.bind(mod .. " + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a"))
 
 -- ─── Clipboard ──────────────────────────────────────────────
 hl.bind(mod .. " + SHIFT + V", hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard"), { mods = "ALT" })
+
+-- ─── Gamemode ───────────────────────────────────────────────
+hl.bind("SUPER + G", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/gamemode.sh"))
+

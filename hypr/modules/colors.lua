@@ -10,8 +10,8 @@ hl.config({
         col = {
             active_border = {
                 colors = { 
-                    "rgba(" .. (colors.primary or "bfc1ff") .. "ee)", 
-                    "rgba(" .. (colors.tertiary or "f4b2e2") .. "ee)" 
+                    "rgba(" .. (colors.term1 or "bfc1ff") .. "ee)", 
+                    "rgba(" .. (colors.secondary or "f4b2e2") .. "ee)" 
                 },
                 angle = 45,
             },
