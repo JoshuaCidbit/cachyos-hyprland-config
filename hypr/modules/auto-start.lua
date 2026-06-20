@@ -2,6 +2,8 @@
 --  modules/auto-start.lua
 -- ============================================================
 
+local HOME = os.getenv("HOME")
+
 hl.on("hyprland.start", function()
 
     -- ── Servicios core ──────────────────────────────────────
@@ -40,9 +42,9 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("caelestia shell -d")
 
     -- ── Wallpaper (delay 2s) ──────────────────────────────────
-    hl.exec_cmd("/home/joshua/.config/wal/bin/monitor_fullscreen.sh")
+    hl.exec_cmd(HOME .. "/.config/wal/bin/monitor_fullscreen.sh")
     hl.timer(function()
-        hl.exec_cmd("/home/joshua/.config/wal/bin/wallpaper_picker.sh --restore")
+        hl.exec_cmd(HOME .. "/.config/wal/bin/wallpaper_picker.sh --restore")
     end, { timeout = 2000, type = "oneshot" })
 
 end)

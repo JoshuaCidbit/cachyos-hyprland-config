@@ -2,13 +2,37 @@
 --  modules/environment-variables.lua
 -- ============================================================
 
--- ── NVIDIA ───────────────────────────────────────────────────
-hl.env("LIBVA_DRIVER_NAME",         "nvidia")
-hl.env("GBM_BACKEND",               "nvidia-drm")
-hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
-hl.env("__GL_GSYNC_ALLOWED", "1")
-hl.env("__GL_VRR_ALLOWED",   "1")
-hl.env("AQ_FORCE_LINEAR_BLIT", "0")
+-- ── Detección de GPU ───────────────────────────────────────────
+local function kernel_module_loaded(name)
+    local f = io.open("/sys/module/" .. name .. "/version", "r")
+    if f then
+        f:close()
+        return true
+    end
+    local d = io.open("/sys/module/" .. name .. "/", "r")
+    if d then
+        d:close()
+        return true
+    end
+    return false
+end
+ 
+local has_nvidia = kernel_module_loaded("nvidia")
+local has_amd    = kernel_module_loaded("amdgpu")
+ 
+if has_nvidia then
+    hl.env("LIBVA_DRIVER_NAME",         "nvidia")
+    hl.env("GBM_BACKEND",               "nvidia-drm")
+    hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+    hl.env("__GL_GSYNC_ALLOWED", "1")
+    hl.env("__GL_VRR_ALLOWED",   "1")
+    hl.env("AQ_FORCE_LINEAR_BLIT", "0")
+end
+ 
+if has_amd then
+    hl.env("LIBVA_DRIVER_NAME", "radeonsi")
+    hl.env("VDPAU_DRIVER",      "radeonsi")
+end
 
 -- ── XDG ──────────────────────────────────────────────────────
 hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
