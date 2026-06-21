@@ -38,6 +38,7 @@ end
 hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
 hl.env("XDG_SESSION_TYPE",    "wayland")
 hl.env("XDG_SESSION_DESKTOP", "Hyprland")
+hl.env("XDG_DATA_DIRS", "/var/lib/flatpak/exports/share:/home/joshua/.local/share/flatpak/exports/share:/usr/local/share:/usr/share")
 
 -- ── Toolkit backends ─────────────────────────────────────────
 hl.env("SDL_VIDEODRIVER", "wayland,x11,windows")

@@ -27,6 +27,8 @@ if status is-interactive
     abbr ll 'ls -l'
     abbr la 'ls -a'
     abbr lla 'ls -la'
+    abbr lmstudio 'nohup env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia lm-studio > /dev/null 2>&1 & disown'
+
     # Custom colours
     if set -q KITTY_LISTEN_ON
         kitty @ --to $KITTY_LISTEN_ON set-colors --all ~/.cache/wal/colors-kitty.conf 2>/dev/null
@@ -39,12 +41,5 @@ if status is-interactive
     # Custom fish config
     source ~/.config/caelestia/user-config.fish 2> /dev/null
 end
-# Flatpak path configuration
-set -x XDG_DATA_DIRS /var/lib/flatpak/exports/share $HOME/.local/share/flatpak/exports/share $XDG_DATA_DIRS
 
-# Added by LM Studio CLI (lms)
-set -gx PATH $PATH $HOME/.lmstudio/bin
-# End of LM Studio CLI section
-
-    abbr lmstudio 'nohup env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia lm-studio > /dev/null 2>&1 & disown'
-
+fish_add_path --append $HOME/.lmstudio/bin
