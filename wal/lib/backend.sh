@@ -22,7 +22,7 @@ stop_video_backend() {
         sleep 0.2
     fi
     # Limpiar instancias mpv huérfanas que mpvpaper haya dejado
-    pkill -9 -f "mpv.*mpvpaper" 2>/dev/null || true
+    pkill -9 -f "mpv" 2>/dev/null || true
     sleep 0.2
 }
 
