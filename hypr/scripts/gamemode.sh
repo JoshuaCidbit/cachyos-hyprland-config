@@ -10,11 +10,15 @@ if [[ -f "$STATE_FILE" ]]; then
     notify-send "Gamemode" "OFF"
 else
     touch "$STATE_FILE"
-    hyprctl keyword animations:enabled false
-    hyprctl keyword decoration:blur:enabled false
-    hyprctl keyword decoration:shadow:enabled false
-    hyprctl keyword general:gaps_in 0
-    hyprctl keyword general:gaps_out 0
+    hyprctl eval 'hl.config({
+        general = { gaps_in = 0, gaps_out = 0 },
+        animations = { enabled = false },
+        decoration = {
+            shadow = { enabled = false },
+            blur = { enabled = false },
+            rounding = 0,
+        },
+    })'
     "$ARBITER"
     notify-send "Gamemode" "ON — VRAM liberada"
 fi
