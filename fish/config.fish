@@ -28,6 +28,7 @@ if status is-interactive
     abbr la 'ls -a'
     abbr lla 'ls -la'
     abbr lmstudio 'nohup env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia lm-studio > /dev/null 2>&1 & disown'
+    abbr code 'codium'
 
     # Custom colours
     if set -q KITTY_LISTEN_ON

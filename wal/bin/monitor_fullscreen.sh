@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
+FULLSCREEN_LOCK="/tmp/hypr-fullscreen.lock"
+ARBITER="$HOME/.config/wal/bin/wallpaper_arbiter.sh"
 
-# Esperar a que hyprctl esté disponible
-while ! hyprctl version &>/dev/null; do
-    sleep 0.5
-done
+while ! hyprctl version &>/dev/null; do sleep 0.5; done
 
 SOCKET="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
-
-# Esperar a que el socket exista
-while [ ! -S "$SOCKET" ]; do
-    sleep 0.5
-done
+while [ ! -S "$SOCKET" ]; do sleep 0.5; done
 
 socat -u UNIX-CONNECT:"$SOCKET" - | while read -r line; do
     case "$line" in
         "fullscreen>>1")
-            ~/.config/wal/bin/toggle_mpvpaper.sh --kill
+            touch "$FULLSCREEN_LOCK"
+            "$ARBITER"
             ;;
         "fullscreen>>0")
+            rm -f "$FULLSCREEN_LOCK"
             sleep 0.5
-            ~/.config/wal/bin/toggle_mpvpaper.sh --restore
+            "$ARBITER"
             ;;
     esac
 done
