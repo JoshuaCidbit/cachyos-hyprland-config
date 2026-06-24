@@ -116,7 +116,7 @@ def main():
 
     scheme = {
         "name": "Pywal",
-        "flavour": "dynamic",
+        "variant": "dynamic",
         "mode": mode,
         "colours": colours,
     }
