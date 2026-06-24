@@ -36,14 +36,15 @@ require("modules.auto-start")
 
 -- ── Keybindings ──────────────────────────────────────────────
 local mod = "SUPER"
+
+-- ── caelestia launcher ───────────────────────────────────────
 hl.bind(mod .. " + Super_L",hl.dsp.exec_cmd("caelestia shell drawers toggle launcher"))
 
---caelestia launcher- ─── Apps ────────────────────────────────────────────────────
+-- ─── Apps ────────────────────────────────────────────────────
 hl.bind(mod .. " + Return", hl.dsp.exec_cmd("kitty"))
 hl.bind(mod .. " + E",      hl.dsp.exec_cmd("nautilus"))
 hl.bind(mod .. " + B",      hl.dsp.exec_cmd("firefox"))
 hl.bind(mod .. " + D",      hl.dsp.exec_cmd("rofi -show drun"))
-hl.bind(mod .. " + P",      hl.dsp.exec_cmd("flameshot"))
 
 -- ─── Wallpaper ───────────────────────────────────────────────
 hl.bind(mod .. " + W",         hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/wal/bin/wallpaper_picker.sh"))
@@ -62,7 +63,7 @@ hl.bind(mod .. " + right", hl.dsp.focus({ direction = "right" }))
 hl.bind(mod .. " + up",    hl.dsp.focus({ direction = "up"    }))
 hl.bind(mod .. " + down",  hl.dsp.focus({ direction = "down"  }))
 
--- ─── Mover ventanas (teclado) ─────────────────────────────────
+-- ─── Mover ventanas (teclado) ────────────────────────────────
 hl.bind(mod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "left"  }))
 hl.bind(mod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
 hl.bind(mod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "up"    }))
@@ -72,11 +73,11 @@ hl.bind(mod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "down"  }))
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
--- ─── Tab entre workspaces ───────────────────────────────────
+-- ─── Tab entre workspaces ────────────────────────────────────
 hl.bind(mod .. " + TAB", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mod .. " + SHIFT + TAB",   hl.dsp.focus({ workspace = "e-1" }))
 
--- ─── Scroll entre workspaces ────────────────────────────────
+-- ─── Scroll entre workspaces ─────────────────────────────────
 hl.bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
@@ -99,14 +100,17 @@ hl.bind(mod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
 hl.bind(mod .. " + L",         hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mod .. " + SHIFT + L", hl.dsp.exec_cmd("systemctl suspend-then-hibernate"))
 
--- ─── Screenshot / color picker ────────────────────────────────
+-- ─── Screenshot / color picker ───────────────────────────────
 hl.bind("Print",               hl.dsp.exec_cmd("grimblast copy screen"))
 hl.bind(mod .. " + SHIFT + S", hl.dsp.exec_cmd("grimblast copy area"))
 hl.bind(mod .. " + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a"))
 
--- ─── Clipboard ──────────────────────────────────────────────
+-- ─── Clipboard ───────────────────────────────────────────────
 hl.bind(mod .. " + SHIFT + V", hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard"), { mods = "ALT" })
 
--- ─── Gamemode ───────────────────────────────────────────────
+-- ─── Gamemode ────────────────────────────────────────────────
 hl.bind("SUPER + G", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/gamemode.sh"))
 
+-- ─── Firefox ─────────────────────────────────────────────────
+hl.bind(mod .. " + Y",      hl.dsp.exec_cmd("firefox https://www.youtube.com/"))
+hl.bind(mod .. " + N",      hl.dsp.exec_cmd("firefox https://app.notion.com/"))
