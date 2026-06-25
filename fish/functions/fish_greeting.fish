@@ -9,6 +9,7 @@ function fish_greeting
     echo '  / /___/ /_/ /  __/ /  __(__  ) /_/ / /_/ /  '
     echo '  \____/\__,_/\___/_/\___/____/\__/_/\__,_/   '
     set_color normal
+    ~/.config/fastfetch/gen_fastfetch.sh 2>/dev/null
     fastfetch --key-padding-left 5
-
-end 
+    
+end
