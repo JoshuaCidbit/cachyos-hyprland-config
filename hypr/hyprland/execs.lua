@@ -1,5 +1,6 @@
 local vars = require("variables")
 local fn   = require("hyprland.functions")
+local HOME = os.getenv("HOME")
 
 hl.on("hyprland.start", function()
     -- Keyring and auth
