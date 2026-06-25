@@ -1,8 +1,3 @@
--- ============================================================
---  modules/animations.lua
---  Curvas bezier y animaciones (base personal + extras de caelestia)
--- ============================================================
-
 hl.config({
     animations = {
         enabled = true,

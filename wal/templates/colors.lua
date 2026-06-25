@@ -1,117 +1,128 @@
 -- colors.lua (generado automáticamente por pywal)
-local M = {{}}
+return {{
+    -- Paleta principal
+    primary_paletteKeyColor          = "{color4.strip}",
+    secondary_paletteKeyColor        = "{color5.strip}",
+    tertiary_paletteKeyColor         = "{color6.strip}",
+    neutral_paletteKeyColor          = "{color8.strip}",
+    neutral_variant_paletteKeyColor  = "{color7.strip}",
 
--- Paleta principal
-M.primary_paletteKeyColor = "{color4.strip}"
-M.secondary_paletteKeyColor = "{color5.strip}"
-M.tertiary_paletteKeyColor = "{color6.strip}"
-M.neutral_paletteKeyColor = "{color8.strip}"
-M.neutral_variant_paletteKeyColor = "{color7.strip}"
+    -- Fondos y superficies
+    background              = "{background.strip}",
+    onBackground            = "{foreground.strip}",
+    surface                 = "{background.strip}",
+    surfaceDim              = "{background.strip}",
+    surfaceBright           = "{color8.strip}",
+    surfaceContainerLowest  = "{color0.strip}",
+    surfaceContainerLow     = "{color0.strip}",
+    surfaceContainer        = "{color1.strip}",
+    surfaceContainerHigh    = "{color8.strip}",
+    surfaceContainerHighest = "{color8.strip}",
+    onSurface               = "{foreground.strip}",
+    surfaceVariant          = "{color8.strip}",
+    onSurfaceVariant        = "{color7.strip}",
+    inverseSurface          = "{foreground.strip}",
+    inverseOnSurface        = "{color1.strip}",
+    outline                 = "{color7.strip}",
+    outlineVariant          = "{color8.strip}",
+    shadow                  = "000000",
+    scrim                   = "000000",
+    surfaceTint             = "{color4.strip}",
 
--- Fondos y superficies
-M.background = "{background.strip}"
-M.onBackground = "{foreground.strip}"
-M.surface = "{background.strip}"
-M.surfaceDim = "{background.strip}"
-M.surfaceBright = "{color8.strip}"
-M.surfaceContainerLowest = "{color0.strip}"
-M.surfaceContainerLow = "{color0.strip}"
-M.surfaceContainer = "{color1.strip}"
-M.surfaceContainerHigh = "{color8.strip}"
-M.surfaceContainerHighest = "{color8.strip}"
-M.onSurface = "{foreground.strip}"
-M.surfaceVariant = "{color8.strip}"
-M.onSurfaceVariant = "{color7.strip}"
-M.inverseSurface = "{foreground.strip}"
-M.inverseOnSurface = "{color1.strip}"
-M.outline = "{color7.strip}"
-M.outlineVariant = "{color8.strip}"
-M.shadow = "000000"
-M.scrim = "000000"
-M.surfaceTint = "{color4.strip}"
+    -- Colores dinámicos
+    primary              = "{color4.strip}",
+    onPrimary            = "{color0.strip}",
+    primaryContainer     = "{color4.strip}",
+    onPrimaryContainer   = "{foreground.strip}",
+    inversePrimary       = "{color4.strip}",
+    secondary            = "{color5.strip}",
+    onSecondary          = "{color0.strip}",
+    secondaryContainer   = "{color8.strip}",
+    onSecondaryContainer = "{color7.strip}",
+    tertiary             = "{color6.strip}",
+    onTertiary           = "{color0.strip}",
+    tertiaryContainer    = "{color6.strip}",
+    onTertiaryContainer  = "000000",
+    error                = "{color1.strip}",
+    onError              = "{color0.strip}",
+    errorContainer       = "{color1.strip}",
+    onErrorContainer     = "{foreground.strip}",
 
--- Colores dinámicos
-M.primary = "{color4.strip}"
-M.onPrimary = "{color0.strip}"
-M.primaryContainer = "{color4.strip}"
-M.onPrimaryContainer = "{foreground.strip}"
-M.inversePrimary = "{color4.strip}"
-M.secondary = "{color5.strip}"
-M.onSecondary = "{color0.strip}"
-M.secondaryContainer = "{color8.strip}"
-M.onSecondaryContainer = "{color7.strip}"
-M.tertiary = "{color6.strip}"
-M.onTertiary = "{color0.strip}"
-M.tertiaryContainer = "{color6.strip}"
-M.onTertiaryContainer = "000000"
-M.error = "{color1.strip}"
-M.onError = "{color0.strip}"
-M.errorContainer = "{color1.strip}"
-M.onErrorContainer = "{foreground.strip}"
+    -- Fixed
+    primaryFixed           = "{color4.strip}",
+    primaryFixedDim        = "{color4.strip}",
+    onPrimaryFixed         = "{color0.strip}",
+    onPrimaryFixedVariant  = "{color8.strip}",
+    secondaryFixed         = "{color5.strip}",
+    secondaryFixedDim      = "{color5.strip}",
+    onSecondaryFixed       = "{color0.strip}",
+    onSecondaryFixedVariant= "{color8.strip}",
+    tertiaryFixed          = "{color6.strip}",
+    tertiaryFixedDim       = "{color6.strip}",
+    onTertiaryFixed        = "{color0.strip}",
+    onTertiaryFixedVariant = "{color8.strip}",
 
--- Fixed
-M.primaryFixed = "{color4.strip}"
-M.primaryFixedDim = "{color4.strip}"
-M.onPrimaryFixed = "{color0.strip}"
-M.onPrimaryFixedVariant = "{color8.strip}"
-M.secondaryFixed = "{color5.strip}"
-M.secondaryFixedDim = "{color5.strip}"
-M.onSecondaryFixed = "{color0.strip}"
-M.onSecondaryFixedVariant = "{color8.strip}"
-M.tertiaryFixed = "{color6.strip}"
-M.tertiaryFixedDim = "{color6.strip}"
-M.onTertiaryFixed = "{color0.strip}"
-M.onTertiaryFixedVariant = "{color8.strip}"
+    -- Terminal
+    term0  = "{color0.strip}",
+    term1  = "{color1.strip}",
+    term2  = "{color2.strip}",
+    term3  = "{color3.strip}",
+    term4  = "{color4.strip}",
+    term5  = "{color5.strip}",
+    term6  = "{color6.strip}",
+    term7  = "{color7.strip}",
+    term8  = "{color8.strip}",
+    term9  = "{color9.strip}",
+    term10 = "{color10.strip}",
+    term11 = "{color11.strip}",
+    term12 = "{color12.strip}",
+    term13 = "{color13.strip}",
+    term14 = "{color14.strip}",
+    term15 = "{color15.strip}",
 
--- Terminal
-M.term0 = "{color0.strip}"
-M.term1 = "{color1.strip}"
-M.term2 = "{color2.strip}"
-M.term3 = "{color3.strip}"
-M.term4 = "{color4.strip}"
-M.term5 = "{color5.strip}"
-M.term6 = "{color6.strip}"
-M.term7 = "{color7.strip}"
-M.term8 = "{color8.strip}"
-M.term9 = "{color9.strip}"
-M.term10 = "{color10.strip}"
-M.term11 = "{color11.strip}"
-M.term12 = "{color12.strip}"
-M.term13 = "{color13.strip}"
-M.term14 = "{color14.strip}"
-M.term15 = "{color15.strip}"
+    -- Catppuccin / Otros
+    rosewater = "{color15.strip}",
+    flamingo  = "{color15.strip}",
+    pink      = "{color13.strip}",
+    mauve     = "{color5.strip}",
+    red       = "{color1.strip}",
+    maroon    = "{color9.strip}",
+    peach     = "{color3.strip}",
+    yellow    = "{color3.strip}",
+    green     = "{color2.strip}",
+    teal      = "{color6.strip}",
+    sky       = "{color6.strip}",
+    sapphire  = "{color4.strip}",
+    blue      = "{color4.strip}",
+    lavender  = "{color12.strip}",
+    text      = "{foreground.strip}",
+    subtext1  = "{color7.strip}",
+    subtext0  = "{color8.strip}",
+    overlay2  = "{color8.strip}",
+    overlay1  = "{color8.strip}",
+    overlay0  = "{color8.strip}",
+    surface2  = "{color8.strip}",
+    surface1  = "{color8.strip}",
+    surface0  = "{color0.strip}",
+    base      = "{background.strip}",
+    mantle    = "{background.strip}",
+    crust     = "{color0.strip}",
 
--- Estilo Catppuccin / Otros
-M.rosewater = "{color15.strip}"
-M.flamingo = "{color15.strip}"
-M.pink = "{color13.strip}"
-M.mauve = "{color5.strip}"
-M.red = "{color1.strip}"
-M.maroon = "{color9.strip}"
-M.peach = "{color3.strip}"
-M.yellow = "{color3.strip}"
-M.green = "{color2.strip}"
-M.teal = "{color6.strip}"
-M.sky = "{color6.strip}"
-M.sapphire = "{color4.strip}"
-M.blue = "{color4.strip}"
-M.lavender = "{color12.strip}"
-M.text = "{foreground.strip}"
-M.subtext1 = "{color7.strip}"
-M.subtext0 = "{color8.strip}"
-M.overlay2 = "{color8.strip}"
-M.overlay1 = "{color8.strip}"
-M.overlay0 = "{color8.strip}"
-M.surface2 = "{color8.strip}"
-M.surface1 = "{color8.strip}"
-M.surface0 = "{color0.strip}"
-M.base = "{background.strip}"
-M.mantle = "{background.strip}"
-M.crust = "{color0.strip}"
+    -- KDE
+    klink              = "{color4.strip}",
+    klinkSelection     = "{color4.strip}",
+    kvisited           = "{color5.strip}",
+    kvisitedSelection  = "{color5.strip}",
+    knegative          = "{color1.strip}",
+    knegativeSelection = "{color1.strip}",
+    kneutral           = "{color3.strip}",
+    kneutralSelection  = "{color3.strip}",
+    kpositive          = "{color2.strip}",
+    kpositiveSelection = "{color2.strip}",
 
-M.success = "{color2.strip}"
-M.onSuccess = "{color0.strip}"
-M.successContainer = "{color2.strip}"
-M.onSuccessContainer = "{foreground.strip}"
-
-return M
+    -- Success
+    success            = "{color2.strip}",
+    onSuccess          = "{color0.strip}",
+    successContainer   = "{color2.strip}",
+    onSuccessContainer = "{foreground.strip}",
+}}

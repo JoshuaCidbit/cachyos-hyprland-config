@@ -31,7 +31,7 @@ load_wal_colors() {
 # ─── Aplicadores individuales ─────────────────────────────────────────────────
 
 _apply_hyprland() {
-    local lua_dir="${HOME}/.config/hypr/schemes"
+    local lua_dir="${HOME}/.config/hypr/scheme"
     mkdir -p "$lua_dir"
     if [[ -f "${HOME}/.cache/wal/colors.lua" ]]; then
         cp "${HOME}/.cache/wal/colors.lua" "${lua_dir}/colors.lua" || true
