@@ -47,7 +47,7 @@ return {
     windowFullscreenOpacity    = 1,
 
     windowRounding             = 15,
-    windowBorderSize           = 1,
+    windowBorderSize           = 2,
     activeWindowBorderColour   = {
         colors = {
             "rgba(" .. scheme.term1 .. "ee)",
