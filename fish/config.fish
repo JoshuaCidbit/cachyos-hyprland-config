@@ -29,7 +29,8 @@ if status is-interactive
     abbr lla 'ls -la'
     abbr lmstudio 'nohup env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia lm-studio > /dev/null 2>&1 & disown'
     abbr code 'codium'
-    abbr p 'sudo pacman'
+    abbr ps 'sudo pacman -S'
+    abbr pr 'sudo pacman -R'
     abbr i 'yay -S'
 
     # Custom colours
@@ -46,3 +47,8 @@ if status is-interactive
 end
 
 fish_add_path --append $HOME/.lmstudio/bin
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /home/joshua/.lmstudio/bin
+# End of LM Studio CLI section
+

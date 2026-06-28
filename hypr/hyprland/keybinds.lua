@@ -126,7 +126,7 @@ hl.bind(vars.kbWindowFullscreen, hl.dsp.window.fullscreen({ mode = "fullscreen" 
 hl.bind(vars.kbWindowBorderedFullscreen, hl.dsp.window.fullscreen({ mode = "maximized" }))
 hl.bind(vars.kbToggleWindowFloating, hl.dsp.window.float())
 hl.bind(vars.kbCloseWindow, hl.dsp.window.close())
-hl.bind(vars.kbKillWindow, hl.dsp.exec_cmd("bash -c 'pkill -9 -x $(hyprctl activewindow -j | jq -r .class)'"))
+hl.bind(vars.kbKillWindow, hl.dsp.window.kill())
 
 -- Special workspace toggles
 hl.bind(vars.kbSpecialWs, hl.dsp.exec_cmd("caelestia toggle specialws"))
