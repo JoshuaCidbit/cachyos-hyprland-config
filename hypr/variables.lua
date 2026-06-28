@@ -7,11 +7,11 @@ return {
 
     -- Apps
     terminal                   = "foot",
-    browser                    = "firefox",
+    browser                    = "zen-browser",
     editor                     = "codium",
     fileExplorer               = "nautilus",
     audioSettings              = "pavucontrol",
-    youtube                    = "firefox https://www.youtube.com",
+    youtube                    = "zen-browser https://www.youtube.com",
 
     -- Touchpad
     touchpadDisableTyping      = true,
@@ -31,7 +31,7 @@ return {
 
     -- Shadow
     shadowEnabled              = true,
-    shadowRange                = 10,
+    shadowRange                = 15,
     shadowRenderPower          = 4,
     shadowColour               = "rgba(" .. scheme.inversePrimary .. "10)",
 
@@ -50,8 +50,13 @@ return {
     windowBorderSize           = 2,
     activeWindowBorderColour   = {
         colors = {
-            "rgba(" .. scheme.term1 .. "ee)",
-            "rgba(" .. scheme.secondary .. "ee)",
+            "rgba(" .. scheme.term9 .. "ee)",
+            "rgba(" .. scheme.term11 .. "ee)",
+            "rgba(" .. scheme.term10 .. "ee)",
+            "rgba(" .. scheme.term14 .. "ee)",
+            "rgba(" .. scheme.term10 .. "ee)",
+            "rgba(" .. scheme.term11 .. "ee)",
+            "rgba(" .. scheme.term9 .. "ee)",
         },
         angle = 45,
     },
