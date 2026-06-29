@@ -32,6 +32,7 @@ if status is-interactive
     abbr ps 'sudo pacman -S'
     abbr pr 'sudo pacman -R'
     abbr i 'yay -S'
+    abbr download 'aria2c -x 16 -s 16 -c '
 
     # Custom colours
     if set -q KITTY_LISTEN_ON

@@ -10,6 +10,11 @@
 # lib/colors.sh — Carga y aplicación de colores de pywal
 # ───────────────────────────────────────────────────────
 
+SDDM_CACHE_BG="${HOME}/.cache/wal/sddm_background.jpg"
+SDDM_CACHE_CONF="${HOME}/.cache/wal/sddm_theme.conf"
+SDDM_TPL="${HOME}/.config/wal/templates/sddm_theme.conf.tpl"
+SDDM_SYNC_BIN="/usr/local/bin/sddm-pixie-sync.sh"
+
 load_wal_colors() {
     if [[ -f "$WAL_COLORS" ]]; then
         set +u
@@ -59,6 +64,33 @@ _apply_cava() {
     pkill -SIGUSR1 cava || true
 }
 
+_apply_sddm() {
+    local img="$1"
+
+    [[ -f "$img" ]] || return 0
+    [[ -f "$SDDM_TPL" ]] || return 0
+
+    # 1. Copiar wallpaper a cache como background.jpg
+    if command -v magick &>/dev/null; then
+        magick "$img" -quality 90 "$SDDM_CACHE_BG" 2>/dev/null || cp -f "$img" "$SDDM_CACHE_BG"
+    elif command -v convert &>/dev/null; then
+        convert "$img" -quality 90 "$SDDM_CACHE_BG" 2>/dev/null || cp -f "$img" "$SDDM_CACHE_BG"
+    else
+        cp -f "$img" "$SDDM_CACHE_BG"
+    fi
+
+    # 2. Generar theme.conf desde la plantilla con colores de pywal
+    sed \
+        -e "s/%PRIMARY%/${color4}/" \
+        -e "s/%ACCENT%/${color6}/" \
+        -e "s/%BACKGROUND%/${background}/" \
+        -e "s/%TEXT%/${foreground}/" \
+        "$SDDM_TPL" > "$SDDM_CACHE_CONF"
+
+    # 3. Sincronizar al theme real (root, sin password)
+    sudo -n "$SDDM_SYNC_BIN" 2>/dev/null || true
+}
+
 # ─── Orquestador ─────────────────────────────────────────────────────────────
 
 apply_wal() {
@@ -73,4 +105,5 @@ apply_wal() {
     _apply_fastfetch
     _apply_btop
     _apply_cava
+    _apply_sddm "$target"
 }
