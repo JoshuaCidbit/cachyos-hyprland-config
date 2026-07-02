@@ -1,30 +1,41 @@
 #!/bin/bash
-
-# Ruta a tus archivos
+# Rutas
 PYWAL_JSON="$HOME/.cache/wal/colors.json"
 CONFIG_FILE="$HOME/.config/fastfetch/config.jsonc"
-
-# Función para convertir HEX a ANSI TrueColor con doble escape para JSON
-hex_to_ansi() {
-    local hex=${1#\#}
-    local r=$((16#${hex:0:2}))
-    local g=$((16#${hex:2:2}))
-    local b=$((16#${hex:4:2}))
-    # El doble \\ asegura que el JSON sea válido y Fastfetch reciba el \ original
-    printf "\\\\u001b[38;2;%d;%d;%dm" "$r" "$g" "$b"
+idx_to_ansi() {
+printf "\\\\u001b[38;5;%dm" "$1"
 }
+C1=$(idx_to_ansi 4)    # color4
+C2=$(idx_to_ansi 2)    # color2
+C3=$(idx_to_ansi 3)    # color3
+C4=$(idx_to_ansi 6)    # color6
+RESET="\\u001b[0m"
 
-# Extraer colores
-C1=$(hex_to_ansi $(jq -r '.colors.color1' "$PYWAL_JSON"))
-C2=$(hex_to_ansi $(jq -r '.colors.color2' "$PYWAL_JSON"))
-C3=$(hex_to_ansi $(jq -r '.colors.color3' "$PYWAL_JSON"))
-C4=$(hex_to_ansi $(jq -r '.colors.color4' "$PYWAL_JSON"))
+LC1D=$(idx_to_ansi 4)    # teal oscuro/sombra (color4)
+LC1L=$(idx_to_ansi 12)   # teal claro/vivo   (color12, bright de color4)
+LC2D=$(idx_to_ansi 6)    # cian oscuro/sombra (color6)
+LC2L=$(idx_to_ansi 14)   # cian claro/vivo    (color14, bright de color6)
+ 
+LOGO_SRC="          ${LC1L}++++++++++++${LC2L}=            \n"
+LOGO_SRC+="         ${LC2L}=${LC1L}+++++++++${LC1D}*${LC1L}++    ${LC1L}++       \n"
+LOGO_SRC+="        ${LC2L}==${LC1L}++${LC2L}===${LC1L}++++++              \n"
+LOGO_SRC+="       ${LC2L}===${LC1L}+++                      \n"
+LOGO_SRC+="     ${LC2L}===${LC1L}++++           ${LC2L}====        \n"
+LOGO_SRC+="    ${LC1L}+++++++             ${LC2D}--         \n"
+LOGO_SRC+="     ${LC2L}===${LC1L}+++                ${LC1L}+++     \n"
+LOGO_SRC+="      ${LC1D}**${LC1L}++++               ${LC2L}====    \n"
+LOGO_SRC+="       ${LC1L}++++${LC2L}=${LC1L}+${LC1D}*${LC2L}============         \n"
+LOGO_SRC+="        ${LC1L}+++${LC2L}=${LC1L}++++++${LC2L}=======          \n"
+LOGO_SRC+="         ${LC1L}++++++++++++${LC2L}===           ${RESET}"
 
 # Generar el archivo
 cat <<EOF > "$CONFIG_FILE"
 {
     "\$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
-    "logo": null,
+    "logo": {
+        "type": "data-raw",
+        "source": "$LOGO_SRC"
+    },
     "display": {
         "separator": "  ",
         "color": "white",
