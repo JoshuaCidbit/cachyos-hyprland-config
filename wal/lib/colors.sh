@@ -49,6 +49,12 @@ _apply_fastfetch() {
     ~/.config/fastfetch/gen_fastfetch.sh && fastfetch || true
 }
 
+_apply_kitty() {
+    command -v kitty &>/dev/null || return 0
+    [[ -S /tmp/kitty ]] || return 0
+    kitty @ --to unix:/tmp/kitty set-colors -a ~/.cache/wal/colors-kitty.conf
+}
+
 _apply_btop() {
     local src="${HOME}/.cache/wal/colors-btop.theme"
     local dst="${HOME}/.config/btop/themes/pywal.theme"
@@ -103,6 +109,7 @@ apply_wal() {
 
     _apply_hyprland
     _apply_fastfetch
+    _apply_kitty
     _apply_btop
     _apply_cava
     _apply_sddm "$target"
