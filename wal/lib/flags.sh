@@ -19,8 +19,8 @@ parse_flags() {
             --preview) DO_PREVIEW=true  ;;
             --simple)  SIMPLE_MODE=true ;;
             --no-wal)  SKIP_WAL=true    ;;
-	    --kill)    KILL_MODE=true   ;;
-	    --restore) RESTORE_MODE=true;;
+            --kill)    KILL_MODE=true   ;;
+            --restore) RESTORE_MODE=true;;
         esac
     done
 }
