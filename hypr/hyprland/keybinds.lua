@@ -138,6 +138,7 @@ hl.bind(vars.kbTodoWs, hl.dsp.exec_cmd("caelestia toggle todo"))
 -- Apps
 hl.bind(vars.kbTerminal, hl.dsp.exec_cmd(vars.terminal))
 hl.bind(vars.kbBrowser, hl.dsp.exec_cmd(vars.browser))
+hl.bind(vars.kbPrivateBrowser, hl.dsp.exec_cmd(vars.privateBrowser))
 hl.bind(vars.kbEditor, hl.dsp.exec_cmd(vars.editor))
 hl.bind(vars.kbFileExplorer, hl.dsp.exec_cmd(vars.fileExplorer))
 hl.bind("CTRL + ALT + V", hl.dsp.exec_cmd(vars.audioSettings))

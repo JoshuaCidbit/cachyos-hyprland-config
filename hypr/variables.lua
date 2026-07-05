@@ -8,6 +8,7 @@ return {
     -- Apps
     terminal                   = "foot",
     browser                    = "zen-browser",
+    privateBrowser             = "zen-browser --private-window",
     editor                     = "codium",
     fileExplorer               = "nautilus",
     audioSettings              = "pavucontrol",
@@ -108,6 +109,7 @@ return {
     -- Apps
     kbTerminal                 = "SUPER + RETURN",
     kbBrowser                  = "SUPER + B",
+    kbPrivateBrowser           = "SUPER + SHIFT + B",
     kbEditor                   = "SUPER + C",
     kbFileExplorer             = "SUPER + E",
     kbYoutube                  = "SUPER + Y",
