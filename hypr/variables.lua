@@ -7,12 +7,12 @@ return {
 
     -- Apps
     terminal                   = "foot",
-    browser                    = "zen-browser",
-    privateBrowser             = "zen-browser --private-window",
+    browser                    = "firefox",
+    privateBrowser             = "firefox --private-window",
     editor                     = "codium",
     fileExplorer               = "nautilus",
     audioSettings              = "pavucontrol",
-    youtube                    = "zen-browser https://www.youtube.com",
+    youtube                    = "firefox https://www.youtube.com",
 
     -- Touchpad
     touchpadDisableTyping      = true,
