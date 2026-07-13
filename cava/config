@@ -10,14 +10,14 @@ style = stereo
 [color]
 gradient = 1
 gradient_count = 8
-gradient_color_1 = '#153760'
-gradient_color_2 = '#4C4E47'
-gradient_color_3 = '#204763'
-gradient_color_4 = '#13344A'
-gradient_color_5 = '#5F5025'
-gradient_color_6 = '#27364A'
-gradient_color_7 = '#153760'
-gradient_color_8 = '#204763'
+gradient_color_1 = '#5F5690'
+gradient_color_2 = '#E56E8B'
+gradient_color_3 = '#97678F'
+gradient_color_4 = '#2E328C'
+gradient_color_5 = '#A94B73'
+gradient_color_6 = '#3E4490'
+gradient_color_7 = '#5F5690'
+gradient_color_8 = '#97678F'
 [smoothing]
 noise_reduction = 85
 monstercat = 1
