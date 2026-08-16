@@ -11,9 +11,9 @@ if [[ -f "$STATE_FILE" ]]; then
 else
     touch "$STATE_FILE"
     hyprctl eval 'hl.config({
-        general = { gaps_in = 0, gaps_out = 0 },
-        animations = { enabled = false },
-        decoration = {
+            general = { gaps_in = 0, gaps_out = 0 },
+            animations = { enabled = false },
+            decoration = {
             shadow = { enabled = false },
             blur = { enabled = false },
             rounding = 0,

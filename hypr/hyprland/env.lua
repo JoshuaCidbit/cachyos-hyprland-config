@@ -26,6 +26,7 @@ if has_nvidia then
     hl.env("__GL_GSYNC_ALLOWED", "1")
     hl.env("__GL_VRR_ALLOWED",   "1")
     hl.env("AQ_FORCE_LINEAR_BLIT", "0")
+    hl.env("NVD_BACKEND", "direct")
 end
  
 if has_amd then
