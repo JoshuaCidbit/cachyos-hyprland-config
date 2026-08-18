@@ -19,7 +19,7 @@ update_state() {
         rm -f "$FULLSCREEN_LOCK"
     fi
 
-    flock -n /tmp/hypr-wallpaper.lock -c "$ARBITER" || true
+    "$ARBITER"
 }
 
 socat -u UNIX-CONNECT:"$SOCKET" - | while read -r line; do
