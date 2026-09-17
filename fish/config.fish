@@ -33,6 +33,7 @@ if status is-interactive
     abbr pr 'sudo pacman -R'
     abbr i 'yay -S'
     abbr download 'aria2c -x 16 -s 16 -c '
+    abbr update 'flatpak update -y && flatpak uninstall --unused -y && sudo pacman -Syyuu --noconfirm'
 
     # Custom colours
     if set -q KITTY_LISTEN_ON
