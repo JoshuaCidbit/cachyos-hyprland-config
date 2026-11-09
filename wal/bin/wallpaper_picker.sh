@@ -6,9 +6,11 @@
 #   (ninguno)   → grid picker con iconos, transición wipe
 #   --preview   → abre imv después de aplicar (solo imágenes estáticas)
 #   --simple    → picker de lista simple (sin iconos)
-#   --no-wal    → omite pywal
+#   --no-wal    → omite pywal16
 #   --kill      → mata mpvpaper (bind de fullscreen / Win+Shift+W)
 #   --restore   → restaura el último wallpaper animado (al salir de fullscreen)
+#   --dry-run   → modo prueba: muestra qué haría sin aplicar nada
+#   --auto      → modo rotación automática (elige intervalo por rofi)
 
 set -euo pipefail
 
@@ -31,7 +33,7 @@ parse_flags "$@"
 source "${LIB_DIR}/validate.sh"
 validate_env
 
-# 4. Colores de pywal (expone color0..color7)
+# 4. Colores de pywal16 (expone color0..color15)
 # shellcheck source=../lib/colors.sh
 source "${LIB_DIR}/colors.sh"
 load_wal_colors
@@ -40,9 +42,10 @@ load_wal_colors
 # shellcheck source=../lib/theme.sh
 source "${LIB_DIR}/theme.sh"
 
-# 6. Helpers de medios (get_type, get_or_create_frame)
+# 6. Helpers de medios (get_type, get_or_create_frame, cleanup_frame_cache)
 # shellcheck source=../lib/media.sh
 source "${LIB_DIR}/media.sh"
+cleanup_frame_cache
 
 # 7. Gestión de backends (awww / mpvpaper)
 # shellcheck source=../lib/backend.sh
@@ -51,6 +54,10 @@ source "${LIB_DIR}/backend.sh"
 # 8. Picker con rofi (depende de theme + media + backend)
 # shellcheck source=../lib/picker.sh
 source "${LIB_DIR}/picker.sh"
+
+# 9. Rotación automática de wallpapers (lib/auto.sh)
+# shellcheck source=../lib/auto.sh
+source "${LIB_DIR}/auto.sh"
 
 # ─── Arrancar daemon de awww ──────────────────────────────────────────────────
 ensure_awww_daemon
@@ -62,39 +69,22 @@ if $KILL_MODE; then
     exit 0
 fi
 
+# ─── Modo rotación automática ──────────────────────────────────────────────────
+if $AUTO_MODE; then
+    if [[ "${AUTO_ROTATE:-off}" == "off" ]]; then
+        _pick_auto_interval
+    fi
+    run_auto_rotation
+    exit 0
+fi
+
 # ─── Selección de wallpaper ───────────────────────────────────────────────────
 TARGET_WALL=""
 
 if $RESTORE_MODE; then
-    if [[ -f "$WAL_HISTORY" ]]; then
-        # Busca el archivo sin tomar en cuenta la extension
-        LAST_USED="$(cat "$WAL_HISTORY")"
-        BASE_NAME="$(basename "$LAST_USED")"
-        FILE_NO_EXT="${BASE_NAME%.*}"
-
-        # Busca el archivo con la extension original
-        ORIGINAL_MEDIA=$(find "$WALL_DIR" -maxdepth 1 -type f \( \
-            -iname "${FILE_NO_EXT}.mp4"  -o \
-            -iname "${FILE_NO_EXT}.webm" -o \
-            -iname "${FILE_NO_EXT}.mkv"  -o \
-            -iname "${FILE_NO_EXT}.gif"  \
-        \) -print -quit)
-
-        # Validamos si find tuvo éxito (era un video/gif)
-        if [[ -n "$ORIGINAL_MEDIA" ]]; then
-            # Solo relanzar si mpvpaper no está ya corriendo
-            if pgrep -x mpvpaper >/dev/null 2>&1; then
-                exit 0
-            fi
-            TARGET_WALL="$ORIGINAL_MEDIA"
-
-        else
-            # Era imagen estática: awww ya la tiene, nada que hacer
-            exit 0
-        fi
-    else
-        exit 0
-    fi
+    # Restaura el último wallpaper desde el historial (video/gif) o no hace nada
+    apply_last_wallpaper
+    [[ -n "$TARGET_WALL" ]] || exit 0
 else
     # Flujo normal del Picker
     SELECTED="$(pick_wallpaper)"

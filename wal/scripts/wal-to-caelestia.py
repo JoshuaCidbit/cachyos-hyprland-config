@@ -3,7 +3,7 @@ import json
 import sys
 from pathlib import Path
 
-# pywal genera esto fresco con cada wallpaper
+# pywal16 genera esto fresco con cada wallpaper
 WAL_COLORS = Path("~/.cache/wal/colors.json").expanduser()
 OUT = Path("~/.local/state/caelestia/scheme.json").expanduser()
 

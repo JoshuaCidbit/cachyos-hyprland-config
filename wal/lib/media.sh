@@ -18,7 +18,7 @@ get_type() {
 }
 
 # Obtiene (o genera con ffmpeg) el primer frame de un gif/video
-# como PNG para usarlo como icono en rofi y como entrada de pywal
+# como PNG para usarlo como icono en rofi y como entrada de pywal16
 get_or_create_frame() {
     local src="$1"
     local name
@@ -30,5 +30,12 @@ get_or_create_frame() {
     fi
 
     echo "$frame"
+}
+
+# Elimina frames de cache viejos (por edad) para no acumular archivos
+cleanup_frame_cache() {
+    local max_age="${FRAME_CACHE_MAX_AGE:-30}"
+    [[ -d "$FRAME_CACHE" ]] || return 0
+    find "$FRAME_CACHE" -maxdepth 1 -type f -mtime +"$max_age" -delete 2>/dev/null || true
 }
 

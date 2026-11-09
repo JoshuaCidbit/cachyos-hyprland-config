@@ -1,0 +1,13 @@
+#!/bin/bash
+# tests/fixtures/rofi — Fake de rofi para tests (inyecta selección vía archivo)
+n=$(cat "${ROFI_CALL_COUNT:-/tmp/opencode/rofi-call-count}" 2>/dev/null || echo 0)
+n=$((n+1)); echo "$n" > "${ROFI_CALL_COUNT:-/tmp/opencode/rofi-call-count}"
+printf '%s\n' "$@" >> "${ROFI_ARGS_LOG:-/tmp/opencode/rofi-args-log.txt}"
+sel="$(cat "${ROFI_SELECTED:-/tmp/opencode/rofi-selected.txt}" 2>/dev/null || echo "")"
+if [[ "${FAKE_MODE:-}" == "time" && "$n" == "1" ]]; then echo "__TIME__"; exit 11; fi
+if [[ "${FAKE_MODE:-}" == "time" && "$n" == "2" ]]; then echo "30 min"; exit 0; fi
+if [[ "${FAKE_MODE:-}" == "time" && "$n" == "3" ]]; then echo "${sel}"; exit "${FAKE_ROFI_RC:-0}"; fi
+if [[ "${FAKE_MODE:-}" == "f" && "$n" == "1" ]]; then exit 10; fi
+if [[ "${FAKE_MODE:-}" == "f" && "$n" == "2" ]]; then echo "${sel}"; exit "${FAKE_ROFI_RC:-0}"; fi
+echo "${sel}"
+exit "${FAKE_ROFI_RC:-0}"

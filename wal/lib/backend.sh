@@ -12,27 +12,44 @@
 ensure_awww_daemon() {
     if ! pidof awww-daemon >/dev/null 2>&1; then
         awww-daemon &
-        sleep 0.5
+        local waited=0
+        while (( waited < 50 )); do
+            if pidof awww-daemon >/dev/null 2>&1; then
+                return 0
+            fi
+            sleep 0.1
+            waited=$(( waited + 1 ))
+        done
     fi
 }
 
 stop_video_backend() {
-    if pgrep -x mpvpaper >/dev/null 2>&1; then
-        pkill -x mpvpaper 2>/dev/null || true
+    local mpvpaper_pid child
+
+    mpvpaper_pid="$(pgrep -x mpvpaper 2>/dev/null | head -n1 || true)"
+
+    if [[ -n "$mpvpaper_pid" ]]; then
+        # 1. Matar primero los hijos mpv (proceso del wallpaper) y luego el padre,
+        #    para no dejar procesos huérfanos.
+        while read -r child; do
+            kill -9 "$child" 2>/dev/null || true
+        done < <(pgrep -P "$mpvpaper_pid" 2>/dev/null || true)
+
+        # 2. Matar el daemon mpvpaper.
+        kill -9 "$mpvpaper_pid" 2>/dev/null || true
         sleep 0.2
     fi
-    # Limpiar instancias mpv huérfanas que mpvpaper haya dejado
-    pkill -9 -f "mpv" 2>/dev/null || true
-    sleep 0.2
 }
 
 apply_image() {
     local path="$1"
+    if $DRY_RUN; then
+        echo "[dry-run] apply_image: $path"
+        return 0
+    fi
+
     stop_video_backend
-    
-    # Debug: Esto imprimirá el valor en tu terminal si ejecutas el script manualmente
-    echo "DEBUG: Usando transición: $TRANSITION"
-    
+
     "$AWW_BIN" img "$path" \
         --transition-type "$TRANSITION" \
 	--transition-duration "$TRANSITION_DUR" 2>/dev/null
@@ -41,6 +58,11 @@ apply_image() {
 
 apply_video() {
     local path="$1"
+    if $DRY_RUN; then
+        echo "[dry-run] apply_video: $path"
+        return 0
+    fi
+
     local frame
     frame="$(get_or_create_frame "$path")"
 
@@ -61,5 +83,57 @@ apply_video() {
 
     #este es el sin fade
     mpvpaper -o "no-audio --hwdec=vaapi --loop-file=inf" "$MONITOR" "$path" &
+}
+
+# Aplica un wallpaper (imagen o video) completo: backend + tema de pywal16
+apply_wallpaper() {
+    local path="$1"
+    local type
+    type="$(get_type "$path")"
+    WAL_TARGET="$path"
+
+    case "$type" in
+        image)
+            apply_image "$path"
+            ;;
+        gif|video)
+            apply_video "$path"
+            WAL_TARGET="$(get_or_create_frame "$path")"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+
+    apply_wal "$WAL_TARGET"
+}
+
+apply_last_wallpaper() {
+    # Restaura el último wallpaper desde el historial (video/gif) o no hace nada
+    # (si el último era una imagen estática, awww ya la tiene aplicada)
+    TARGET_WALL=""
+
+    if [[ ! -f "$WAL_HISTORY" ]]; then
+        return 0
+    fi
+
+    local last_used base_name file_no_ext original_media
+    last_used="$(cat "$WAL_HISTORY")"
+    base_name="$(basename "$last_used")"
+    file_no_ext="${base_name%.*}"
+
+    original_media="$(find "$WALL_DIR" -maxdepth 1 -type f \( \
+        -iname "${file_no_ext}.mp4"  -o \
+        -iname "${file_no_ext}.webm" -o \
+        -iname "${file_no_ext}.mkv"  -o \
+        -iname "${file_no_ext}.gif"  \
+    \) -print -quit)"
+
+    if [[ -n "$original_media" ]]; then
+        # Solo relanzar si mpvpaper no está corriendo
+        if ! pgrep -x mpvpaper >/dev/null 2>&1; then
+            TARGET_WALL="$original_media"
+        fi
+    fi
 }
 

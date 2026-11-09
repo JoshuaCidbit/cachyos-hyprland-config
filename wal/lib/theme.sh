@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lib/theme.sh — Tema de rofi generado dinámicamente con colores de pywal
+# lib/theme.sh — Tema de rofi generado dinámicamente con colores de pywal16
 # ────────────────────────────────────────────────────────────────────────
 #
 # Requiere que load_wal_colors (lib/colors.sh) haya sido llamado antes,
@@ -27,17 +27,17 @@ window {
 }
 mainbox {
     background-color: transparent;
-    spacing: 14px;
-    children: [ inputbar, listview ];
+    spacing: 10px;
+    children: [ inputbar, message, listview ];
 }
 inputbar {
     padding: 12px 16px;
     border-radius: 16px;
     background-color: ${color0}55;
-    children: [ prompt, entry ];
+    children: [ entry ];
 }
 prompt {
-    enabled: true;
+    enabled: false;
     text-color: ${color1};
     background-color: transparent;
     margin: 0px 8px 0px 0px;
@@ -47,6 +47,19 @@ entry {
     placeholder-color: ${color7}66;
     text-color: ${color7};
     background-color: transparent;
+}
+message {
+    enabled: true;
+    padding: 8px 16px;
+    margin: 0px 0px 0px 0px;
+    text-color: ${color1};
+    background-color: transparent;
+    horizontal-align: 0.5;
+    border: 0;
+    border-radius: 0;
+}
+textbox {
+    text-color: ${color1};
 }
 listview {
     columns: 3;

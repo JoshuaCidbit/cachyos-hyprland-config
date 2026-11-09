@@ -1,4 +1,4 @@
--- colors.lua (generado automáticamente por pywal)
+-- colors.lua (generado automáticamente por pywal16)
 return {{
     -- Paleta principal
     primary_paletteKeyColor          = "{color4.strip}",

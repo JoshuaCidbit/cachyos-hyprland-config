@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
-# lib/colors.sh — Carga de colores de pywal con fallback Catppuccin
-# ─────────────────────────────────────────────────────────────────
+# lib/colors.sh — Carga y aplicación de colores de pywal16
+# ───────────────────────────────────────────────────────
 #
 # Uso:
 #   source lib/colors.sh
-#   load_wal_colors     # expone color0..color7 al entorno actual
-
-#!/usr/bin/env bash
-# lib/colors.sh — Carga y aplicación de colores de pywal
-# ───────────────────────────────────────────────────────
+#   load_wal_colors     # expone color0..color15 al entorno actual
 
 SDDM_CACHE_BG="${HOME}/.cache/wal/sddm_background.jpg"
 SDDM_CACHE_CONF="${HOME}/.cache/wal/sddm_theme.conf"
@@ -22,14 +18,25 @@ load_wal_colors() {
         source "$WAL_COLORS"
         set -u
     else
-        # Fallback: paleta Catppuccin Mocha
+        # Fallback: paleta Catppuccin Mocha (16 colores + especiales)
         color0="#11111b"
         color1="#89b4fa"
         color2="#cdd6f4"
         color3="#f9e2af"
         color4="#89b4fa"
         color5="#cba6f7"
+        color6="#94e2d5"
         color7="#cdd6f4"
+        color8="#a6adc8"
+        color9="#f38ba8"
+        color10="#89dceb"
+        color11="#b4befe"
+        color12="#f5c2e7"
+        color13="#fab387"
+        color14="#a6e3a1"
+        color15="#cba6f7"
+        background="#11111b"
+        foreground="#cdd6f4"
     fi
 }
 
@@ -85,7 +92,7 @@ _apply_sddm() {
         cp -f "$img" "$SDDM_CACHE_BG"
     fi
 
-    # 2. Generar theme.conf desde la plantilla con colores de pywal
+    # 2. Generar theme.conf desde la plantilla con colores de pywal16
     sed \
         -e "s/%PRIMARY%/${color4}/" \
         -e "s/%ACCENT%/${color6}/" \
@@ -104,6 +111,12 @@ apply_wal() {
     $SKIP_WAL && return 0
     command -v "$WAL_BIN" &>/dev/null || return 0
     [[ -f "$target" ]] || return 0
+
+    if $DRY_RUN; then
+        echo "[dry-run] pywal16: $WAL_BIN -i \"$target\" -q"
+        echo "[dry-run] aplicadores: hyprland, fastfetch, kitty, btop, cava, sddm"
+        return 0
+    fi
 
     "$WAL_BIN" -i "$target" -q || true
 
