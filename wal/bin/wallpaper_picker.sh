@@ -3,7 +3,7 @@
 # ─────────────────────────────────────────────────────
 #
 # Flags:
-#   (ninguno)   → grid picker con iconos, transición wipe
+#   (ninguno)   → grid picker con iconos, transición wipe diagonal
 #   --preview   → abre imv después de aplicar (solo imágenes estáticas)
 #   --simple    → picker de lista simple (sin iconos)
 #   --no-wal    → omite pywal16
@@ -22,6 +22,7 @@ LIB_DIR="${SCRIPT_DIR}/../lib"
 # 1. Configuración base (variables globales)
 # shellcheck source=../lib/config.sh
 source "${LIB_DIR}/config.sh"
+source "${LIB_DIR}/locks.sh"
 
 # 2. Parseo de flags (modifica DO_PREVIEW, SIMPLE_MODE, SKIP_WAL, KILL_MODE, RESTORE_MODE)
 # shellcheck source=../lib/flags.sh
@@ -65,7 +66,11 @@ ensure_awww_daemon
 # ─── Modo kill (fullscreen activo / Win+Shift+W) ──────────────────────────────
 # Solo mata mpvpaper; awww queda mostrando el último frame como imagen estática
 if $KILL_MODE; then
+    exec 8>"$WALLPAPER_LOCK"
+    flock -w 10 8 || exit 0
     stop_video_backend
+    show_cached_frame
+    exec 8>&-
     exit 0
 fi
 
@@ -82,15 +87,17 @@ fi
 TARGET_WALL=""
 
 if $RESTORE_MODE; then
-    # Restaura el último wallpaper desde el historial (video/gif) o no hace nada
-    apply_last_wallpaper
-    [[ -n "$TARGET_WALL" ]] || exit 0
-else
-    # Flujo normal del Picker
-    SELECTED="$(pick_wallpaper)"
-    [[ -z "$SELECTED" ]] && exit 0
-    TARGET_WALL="${WALL_DIR}/${SELECTED}"
+    if $DRY_RUN; then
+        echo "[dry-run] restore via wallpaper_arbiter.sh"
+        exit 0
+    fi
+    exec "${SCRIPT_DIR}/wallpaper_arbiter.sh"
 fi
+
+# Flujo normal del Picker
+SELECTED="$(pick_wallpaper)"
+[[ -z "$SELECTED" ]] && exit 0
+TARGET_WALL="${WALL_DIR}/${SELECTED}"
 
 # Validar que el archivo objetivo realmente exista
 if [[ ! -f "$TARGET_WALL" ]]; then
@@ -101,28 +108,14 @@ fi
 
 # ─── Aplicar según tipo ───────────────────────────────────────────────────────
 TYPE="$(get_type "$TARGET_WALL")"
-WAL_TARGET="$TARGET_WALL"
 
-case "$TYPE" in
-    image)
-        apply_image "$TARGET_WALL"
-        ;;
-    gif|video)
-        apply_video "$TARGET_WALL"
-        WAL_TARGET="$(get_or_create_frame "$TARGET_WALL")"
-        ;;
-    *)
-        notify-send -u normal "wallpaper-picker" \
-            "Formato no soportado: $(basename "$TARGET_WALL")" 2>/dev/null || true
-        exit 1
-        ;;
-esac
-
-# ─── Pywal ────────────────────────────────────────────────────────────────────
-apply_wal "$WAL_TARGET"
+apply_wallpaper "$TARGET_WALL" || {
+    notify-send -u normal "wallpaper-picker" \
+        "No se pudo aplicar: $(basename "$TARGET_WALL")" 2>/dev/null || true
+    exit 1
+}
 
 # ─── Preview opcional (solo imágenes estáticas) ───────────────────────────────
 if ! $RESTORE_MODE && $DO_PREVIEW && [[ "$TYPE" == "image" ]] && command -v "$IMV_BIN" &>/dev/null; then
     "$IMV_BIN" -f -q "$TARGET_WALL" &
 fi
-

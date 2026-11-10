@@ -72,6 +72,8 @@ El prompt es limpio: `select wallpaper...`.
 | `WALL_DIR` | `~/.pictures/wallpapers/1080p` (`WALLPAPER_DIR`) | Directorio de wallpapers |
 | `WALL_TRANSITION` | `wipe` | Transición: `wipe\|fade\|slide\|none` |
 | `WALL_TRANSITION_DUR` | `1` | Duración de transición (s) |
+| `WALL_TRANSITION_ANGLE` | `45` | Ángulo del barrido en grados (solo `wipe`/`wave`): `0`=derecha→izquierda, `90`=arriba→abajo, `270`=abajo→arriba, `45`=arriba derecha → abajo izquierda |
+| `WALL_TRANSITION_STEP` | `90` | Paso de interpolación por frame (para `wipe`/`wave`: `255`=rasgado nítido, `90`=ligero desenfoque) |
 | `MONITOR` | `*` | Monitor Hyprland |
 | `SIMPLE_MODE` | `false` | Picker simple |
 | `DO_PREVIEW` | `false` | Preview con imv |
@@ -99,6 +101,8 @@ Formato `CLAVE=valor`. Prioridad: variables de entorno > archivo > defaults.
 | `WALL_DIR` | … | Directorio de wallpapers |
 | `WALL_TRANSITION` | `wipe` | Transición |
 | `WALL_TRANSITION_DUR` | `1` | Duración (s) |
+| `WALL_TRANSITION_ANGLE` | `45` | Ángulo del barrido (grados; solo `wipe`/`wave`) |
+| `WALL_TRANSITION_STEP` | `90` | Paso de interpolación por frame (para `wipe`/`wave`: `255`=rasgado nítido, `90`=desenfoque suave) |
 | `MONITOR` | `*` | Monitor |
 | `WALL_AUTO_ROTATE` | `off` | Intervalo inicial |
 

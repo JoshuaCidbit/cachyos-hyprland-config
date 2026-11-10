@@ -1,129 +1,131 @@
 #!/usr/bin/env python3
+"""Pywal Lua palette -> Caelestia scheme.json + Hyprland current.lua."""
+from __future__ import annotations
+
 import json
+import os
+import re
 import sys
+import tempfile
 from pathlib import Path
 
-# pywal16 genera esto fresco con cada wallpaper
-WAL_COLORS = Path("~/.cache/wal/colors.json").expanduser()
-OUT = Path("~/.local/state/caelestia/scheme.json").expanduser()
+WAL_LUA = Path("~/.cache/wal/colors.lua").expanduser()
+SCHEME_JSON = Path("~/.local/state/caelestia/scheme.json").expanduser()
+CURRENT_LUA = Path("~/.config/hypr/scheme/current.lua").expanduser()
 
-def main():
-    if not WAL_COLORS.exists():
-        print(f"Error: no encontré {WAL_COLORS}", file=sys.stderr)
-        sys.exit(1)
+KEY_RE = re.compile(
+    r'^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*"([0-9A-Fa-f]{6})"\s*,?\s*$'
+)
 
-    wal = json.loads(WAL_COLORS.read_text())
-    colors = wal["colors"]   # color0..color15
-    special = wal["special"] # background, foreground, cursor
+REQUIRED = {f"term{i}" for i in range(16)} | {
+    "background", "text", "onBackground", "onSurface",
+    "surface", "surfaceDim", "surfaceBright",
+    "surfaceContainerLowest", "surfaceContainerLow",
+    "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest",
+    "surfaceVariant", "onSurfaceVariant",
+    "inverseSurface", "inverseOnSurface",
+    "outline", "outlineVariant", "shadow", "scrim", "surfaceTint",
+    "primary", "onPrimary", "primaryContainer", "onPrimaryContainer",
+    "inversePrimary",
+    "secondary", "onSecondary", "secondaryContainer", "onSecondaryContainer",
+    "tertiary", "onTertiary", "tertiaryContainer", "onTertiaryContainer",
+    "error", "onError", "errorContainer", "onErrorContainer",
+    "success", "onSuccess", "successContainer", "onSuccessContainer",
+    "primaryFixed", "primaryFixedDim", "onPrimaryFixed",
+    "onPrimaryFixedVariant",
+    "secondaryFixed", "secondaryFixedDim", "onSecondaryFixed",
+    "onSecondaryFixedVariant",
+    "tertiaryFixed", "tertiaryFixedDim", "onTertiaryFixed",
+    "onTertiaryFixedVariant",
+    "primary_paletteKeyColor", "secondary_paletteKeyColor",
+    "tertiary_paletteKeyColor", "neutral_paletteKeyColor",
+    "neutral_variant_paletteKeyColor",
+}
 
-    bg = special["background"].lstrip("#")
-    r, g, b = int(bg[0:2], 16), int(bg[2:4], 16), int(bg[4:6], 16)
-    mode = "light" if (0.299*r + 0.587*g + 0.114*b) > 128 else "dark"
 
-    # Mapear color0..color15 a term0..term15
-    term = {f"term{i}": colors[f"color{i}"].lstrip("#") for i in range(16)}
+def parse_lua_colours(path: Path) -> dict[str, str]:
+    colours: dict[str, str] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        match = KEY_RE.match(line)
+        if match:
+            colours[match.group(1)] = match.group(2).lower()
+    return colours
 
-    # Construir paleta M3 mapeando colores de pywal
-    bg_hex   = special["background"].lstrip("#")
-    fg_hex   = special["foreground"].lstrip("#")
-    c1       = colors["color1"].lstrip("#")
-    c2       = colors["color2"].lstrip("#")
-    c3       = colors["color3"].lstrip("#")
-    c4       = colors["color4"].lstrip("#")
-    c5       = colors["color5"].lstrip("#")
-    c6       = colors["color6"].lstrip("#")
-    c9       = colors["color9"].lstrip("#")
-    c10      = colors["color10"].lstrip("#")
-    c13      = colors["color13"].lstrip("#")
 
-    colours = {
-        # Primarios (color dominante del wallpaper)
-        "primary":                      c1,
-        "onPrimary":                    bg_hex,
-        "primaryContainer":             c5,
-        "onPrimaryContainer":           fg_hex,
-        "inversePrimary":               c9,
-        "primary_paletteKeyColor":      c1,
+def relative_luminance(hex_colour: str) -> float:
+    def channel(value: int) -> float:
+        c = value / 255.0
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
 
-        # Secundarios
-        "secondary":                    c2,
-        "onSecondary":                  bg_hex,
-        "secondaryContainer":           c6,
-        "onSecondaryContainer":         fg_hex,
-        "secondary_paletteKeyColor":    c2,
+    r, g, b = (int(hex_colour[i:i + 2], 16) for i in (0, 2, 4))
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
 
-        # Terciarios
-        "tertiary":                     c3,
-        "onTertiary":                   bg_hex,
-        "tertiaryContainer":            c4,
-        "onTertiaryContainer":          bg_hex,
-        "tertiary_paletteKeyColor":     c3,
 
-        # Fondos y superficies
-        "background":                   bg_hex,
-        "onBackground":                 fg_hex,
-        "surface":                      bg_hex,
-        "surfaceDim":                   bg_hex,
-        "surfaceBright":                c10,
-        "surfaceContainerLowest":       bg_hex,
-        "surfaceContainerLow":          bg_hex,
-        "surfaceContainer":             c5,
-        "surfaceContainerHigh":         c6,
-        "surfaceContainerHighest":      c10,
-        "onSurface":                    fg_hex,
-        "surfaceVariant":               c6,
-        "onSurfaceVariant":             fg_hex,
-        "inverseSurface":               fg_hex,
-        "inverseOnSurface":             bg_hex,
-        "surfaceTint":                  c1,
+def atomic_write(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", dir=path.parent, text=True
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp_name, path)
+    except BaseException:
+        try:
+            os.unlink(tmp_name)
+        except FileNotFoundError:
+            pass
+        raise
 
-        # Outlines
-        "outline":                      c13,
-        "outlineVariant":               c5,
-        "shadow":                       "000000",
-        "scrim":                        "000000",
 
-        # Error / Success
-        "error":                        colors["color1"].lstrip("#"),
-        "onError":                      bg_hex,
-        "errorContainer":               colors["color9"].lstrip("#"),
-        "onErrorContainer":             fg_hex,
-        "success":                      colors["color2"].lstrip("#"),
-        "onSuccess":                    bg_hex,
-        "successContainer":             colors["color10"].lstrip("#"),
-        "onSuccessContainer":           fg_hex,
+def lua_table(colours: dict[str, str]) -> str:
+    lines = [
+        "-- Generated by wal-to-caelestia.py from ~/.cache/wal/colors.lua.",
+        "-- Do not edit; run pywal or the wallpaper picker instead.",
+        "return {",
+    ]
+    for key in sorted(colours):
+        lines.append(f'    {key} = "{colours[key]}",')
+    lines.append("}")
+    return "\n".join(lines) + "\n"
 
-        # Neutrales
-        "neutral_paletteKeyColor":      c6,
-        "neutral_variant_paletteKeyColor": c5,
 
-        # Fixed (mismos valores que primary/secondary/tertiary)
-        "primaryFixed":                 c1,
-        "primaryFixedDim":              c9,
-        "onPrimaryFixed":               bg_hex,
-        "onPrimaryFixedVariant":        c5,
-        "secondaryFixed":               c2,
-        "secondaryFixedDim":            c10,
-        "onSecondaryFixed":             bg_hex,
-        "onSecondaryFixedVariant":      c6,
-        "tertiaryFixed":                c3,
-        "tertiaryFixedDim":             c13,
-        "onTertiaryFixed":              bg_hex,
-        "onTertiaryFixedVariant":       c4,
+def main() -> int:
+    if not WAL_LUA.is_file():
+        print(f"error: missing {WAL_LUA}", file=sys.stderr)
+        return 1
 
-        **term,
-    }
+    colours = parse_lua_colours(WAL_LUA)
+    missing = sorted(REQUIRED - set(colours))
+    if missing:
+        print(
+            f"error: {WAL_LUA} missing: {', '.join(missing[:10])}",
+            file=sys.stderr,
+        )
+        return 1
 
+    if len(colours) != 110:
+        print(
+            f"warning: expected 110 colours, got {len(colours)}",
+            file=sys.stderr,
+        )
+
+    mode = "light" if relative_luminance(colours["background"]) > 0.5 else "dark"
     scheme = {
         "name": "Pywal",
         "flavour": "dynamic",
+        "variant": "tonalspot",
         "mode": mode,
         "colours": colours,
     }
 
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(scheme, indent=2))
-    print(f"✓ Caelestia: {len(colours)} colores desde {WAL_COLORS.name} (modo: {mode})")
+    atomic_write(SCHEME_JSON, json.dumps(scheme, indent=2) + "\n")
+    atomic_write(CURRENT_LUA, lua_table(colours))
+    print(f"✓ Caelestia: {len(colours)} colours, mode={mode}, variant=tonalspot")
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

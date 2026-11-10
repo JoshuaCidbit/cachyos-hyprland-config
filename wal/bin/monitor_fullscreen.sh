@@ -1,45 +1,90 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="${SCRIPT_DIR}/../lib"
 
 source "${LIB_DIR}/config.sh"
-source "${LIB_DIR}/backend.sh"
+source "${LIB_DIR}/locks.sh"
 source "${LIB_DIR}/media.sh"
 
-GAMEMODE_LOCK="/tmp/hypr-gamemode.lock"
-FULLSCREEN_LOCK="/tmp/hypr-fullscreen.lock"
+ARBITER="${SCRIPT_DIR}/wallpaper_arbiter.sh"
 
-while ! hyprctl version &>/dev/null; do sleep 0.5; done
+for dep in socat jq hyprctl; do
+    command -v "$dep" >/dev/null 2>&1 || {
+        echo "monitor_fullscreen: missing dependency: $dep" >&2
+        exit 1
+    }
+done
 
-SOCKET="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
-while [ ! -S "$SOCKET" ]; do sleep 0.5; done
+request_arbiter() {
+    setsid -f "$ARBITER" >/dev/null 2>&1 || true
+}
 
-update_state() {
-    local count
-    count=$(hyprctl clients -j | jq '[.[] | select(.fullscreen > 0)] | length')
-
-    if [[ "$count" -gt 0 ]]; then
-        touch "$FULLSCREEN_LOCK"
-    else
-        rm -f "$FULLSCREEN_LOCK"
-    fi
-
-    # Aplicar estado directamente con los helpers de backend,
-    # sin recargar todo el stack de librerías
-    if [[ -f "$GAMEMODE_LOCK" || -f "$FULLSCREEN_LOCK" ]]; then
-        stop_video_backend
-    else
-        apply_last_wallpaper
+update_fullscreen() {
+    local before=0 after=0
+    [[ -f "$FULLSCREEN_LOCK" ]] && before=1
+    refresh_fullscreen_lock
+    [[ -f "$FULLSCREEN_LOCK" ]] && after=1
+    if [[ "$before" != "$after" ]]; then
+        request_arbiter
     fi
 }
 
-socat -u UNIX-CONNECT:"$SOCKET" - | while read -r line; do
-    case "$line" in
-        "fullscreen>>1"|"fullscreen>>0")
-            sleep 0.3
-            update_state
-            ;;
-    esac
+poll_gamemode() {
+    local before=0 after=0
+    while true; do
+        before=0
+        [[ -f "$GAMEMODE_LOCK" ]] && before=1
+        sync_gamemode_lock
+        after=0
+        [[ -f "$GAMEMODE_LOCK" ]] && after=1
+        if [[ "$before" != "$after" ]]; then
+            request_arbiter
+        fi
+        sleep 2
+    done
+}
+
+wait_for_hyprland() {
+    local i
+    for ((i = 0; i < 120; i++)); do
+        hyprctl version >/dev/null 2>&1 && return 0
+        sleep 0.5
+    done
+    return 1
+}
+
+wait_for_socket() {
+    local i socket="$1"
+    for ((i = 0; i < 120; i++)); do
+        [[ -S "$socket" ]] && return 0
+        sleep 0.5
+    done
+    return 1
+}
+
+wait_for_hyprland || exit 1
+
+SOCKET="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr/${HYPRLAND_INSTANCE_SIGNATURE:-}/.socket2.sock"
+wait_for_socket "$SOCKET" || exit 1
+
+sync_gamemode_lock
+update_fullscreen
+request_arbiter
+
+poll_gamemode &
+POLL_PID=$!
+trap 'kill "$POLL_PID" 2>/dev/null || true' EXIT
+
+while true; do
+    socat -u UNIX-CONNECT:"$SOCKET" - 2>/dev/null | while IFS= read -r line; do
+        case "$line" in
+            fullscreen\>\>*|openwindow\>\>*|closewindow\>\>*|movewindow\>\>*)
+                sleep 0.25
+                update_fullscreen
+                ;;
+        esac
+    done
+    sleep 1
 done

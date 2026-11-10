@@ -8,10 +8,10 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
 
     -- Wayland
-    hl.exec_cmd("systemctl --user stop xdg-desktop-portal xdg-desktop-portal-hyprland")
-    hl.exec_cmd("/usr/lib/xdg-desktop-portal-hyprland &")
     hl.exec_cmd("dbus-update-activation-environment --all")
-    hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+    hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
+    hl.exec_cmd("systemctl --user restart xdg-desktop-portal-hyprland.service")
+    hl.exec_cmd("systemctl --user restart xdg-desktop-portal.service 2>/dev/null || true")
 
     -- Clipboard history
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
@@ -37,9 +37,6 @@ hl.on("hyprland.start", function()
 
     -- Wallpaper
     hl.exec_cmd(HOME .. "/.config/wal/bin/monitor_fullscreen.sh")
-    hl.timer(function()
-        hl.exec_cmd(HOME .. "/.config/wal/bin/wallpaper_picker.sh --restore")
-    end, { timeout = 2000, type = "oneshot" })
 
 end)
 

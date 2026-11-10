@@ -6,6 +6,9 @@
 #   source lib/colors.sh
 #   load_wal_colors     # expone color0..color15 al entorno actual
 
+_COLORS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${_COLORS_DIR}/locks.sh"
+
 SDDM_CACHE_BG="${HOME}/.cache/wal/sddm_background.jpg"
 SDDM_CACHE_CONF="${HOME}/.cache/wal/sddm_theme.conf"
 SDDM_TPL="${HOME}/.config/wal/templates/sddm_theme.conf.tpl"
@@ -43,13 +46,25 @@ load_wal_colors() {
 # ─── Aplicadores individuales ─────────────────────────────────────────────────
 
 _apply_hyprland() {
-    local lua_dir="${HOME}/.config/hypr/scheme"
-    mkdir -p "$lua_dir"
-    if [[ -f "${HOME}/.cache/wal/colors.lua" ]]; then
-        cp "${HOME}/.cache/wal/colors.lua" "${lua_dir}/colors.lua" || true
+    if ! python3 "$HOME/.config/wal/scripts/wal-to-caelestia.py"; then
+        return 0
     fi
-    python3 ~/.config/wal/scripts/wal-to-caelestia.py || true
+    if gamemode_active; then
+        return 0
+    fi
     hyprctl reload || true
+}
+
+_apply_terminals() {
+    local foot_src="${HOME}/.cache/wal/colors-foot-dark.ini"
+    local fuzzel_src="${HOME}/.cache/wal/colors-fuzzel.ini"
+
+    if [[ -f "$foot_src" ]]; then
+        install -Dm644 "$foot_src" "${HOME}/.config/foot/colors-pywal.ini"
+    fi
+    if [[ -f "$fuzzel_src" ]]; then
+        install -Dm644 "$fuzzel_src" "${HOME}/.config/fuzzel/colors-pywal.ini"
+    fi
 }
 
 _apply_fastfetch() {
@@ -114,12 +129,12 @@ apply_wal() {
 
     if $DRY_RUN; then
         echo "[dry-run] pywal16: $WAL_BIN -i \"$target\" -q"
-        echo "[dry-run] aplicadores: hyprland, fastfetch, kitty, btop, cava, sddm"
         return 0
     fi
 
     "$WAL_BIN" -i "$target" -q || true
 
+    _apply_terminals
     _apply_hyprland
     _apply_fastfetch
     _apply_kitty

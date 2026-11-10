@@ -99,7 +99,7 @@ hl.window_rule({
     },
     workspace = "special:music",
 })
-hl.window_rule({ match = { initial_title = "Spotify( %(?Free%)?)?" }, workspace = "special:music" }) -- Spotify wayland, it has no class for some reason
+hl.window_rule({ match = { initial_title = "Spotify.*" }, workspace = "special:music" }) -- Spotify wayland, it has no class for some reason
 hl.window_rule({ match = { class = "discord|equibop|vesktop|whatsapp" }, workspace = "special:communication" })
 hl.window_rule({ match = { class = "Todoist" }, workspace = "special:todo" })
 
@@ -119,6 +119,11 @@ hl.layer_rule({ match = { namespace = "logout_dialog" }, animation = "fade" })  
 hl.layer_rule({ match = { namespace = "selection" }, animation = "fade" })                  -- slurp
 hl.layer_rule({ match = { namespace = "wayfreeze" }, animation = "fade" })                  -- wayfreeze
 hl.layer_rule({ match = { namespace = "launcher" }, animation = "popin 80%", blur = true }) -- Fuzzel
+
+-- Wallpaper backends: no slide in/out when the layer is recreated
+-- (mpvpaper layer-out + awww layer-in was using the global "slide" animation)
+hl.layer_rule({ match = { namespace = "^mpvpaper$" },    no_anim = true })
+hl.layer_rule({ match = { namespace = "^awww-daemon$" }, no_anim = true })
 
 -- Shell
 hl.layer_rule({ match = { namespace = "caelestia-(border-exclusion|area-picker)" }, no_anim = true })

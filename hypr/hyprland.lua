@@ -2,6 +2,11 @@ local home   = os.getenv("HOME")
 local hypr   = home .. "/.config/hypr"
 package.path = package.path .. ";" .. home .. "/.config/caelestia/?.lua"
 
+-- Force fresh colour/variable tables on every hyprctl reload.
+package.loaded["scheme.current"] = nil
+package.loaded["scheme.colors"] = nil
+package.loaded["variables"] = nil
+
 -- Create a file if it doesn't exist, optionally with initial content
 local function maybe_create(file, content)
     local f = io.open(file)

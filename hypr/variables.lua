@@ -1,4 +1,4 @@
-local scheme = require("scheme.colors")
+local scheme = require("scheme.current")
 
 return {
     ------------------
@@ -43,9 +43,9 @@ return {
     singleWindowGapsOut        = 20,
 
     -- Window styling
-    windowActiveOpacity        = 0.98,
-    windowInactiveOpacity      = 0.95,
-    windowFullscreenOpacity    = 1,
+    windowActiveOpacity        = 1.0,
+    windowInactiveOpacity      = 1.0,
+    windowFullscreenOpacity    = 1.0,
 
     windowRounding             = 15,
     windowBorderSize           = 2,
@@ -66,9 +66,9 @@ return {
     -- Misc
     volumeStep                 = 10,
     volumeMax                  = 100,
-    cursorTheme                = "sweet-cursors",
+    cursorTheme                = "Bibata-Modern-Ice",
     cursorSize                 = 24,
-    sleepGestureCmd            = "systemctl suspend-then-hibernate",
+    sleepGestureCmd            = "systemctl suspend",
 
     ------------------
     ---- KEYBINDS ----

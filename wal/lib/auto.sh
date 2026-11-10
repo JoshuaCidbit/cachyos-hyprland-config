@@ -24,6 +24,11 @@ fi
 #   2horas  → 7200
 #   24horas → 86400
 
+# Si se usa standalone, asegurar que locks.sh esté disponible
+if ! declare -F wallpaper_locked >/dev/null 2>&1; then
+    source "$(dirname "${BASH_SOURCE[0]}")/locks.sh"
+fi
+
 get_auto_interval() {
     case "${AUTO_ROTATE:-off}" in
         off|"")        echo 0 ;;
@@ -133,6 +138,11 @@ run_auto_rotation() {
 
     while true; do
         sleep "$interval"
+
+        if wallpaper_locked; then
+            continue
+        fi
+
         local name
         name="$(pick_random_wallpaper)" || name=""
         if [[ -z "$name" ]]; then

@@ -1,6 +1,15 @@
 local vars = require("variables")
 local fn   = require("hyprland.functions")
 
+local function resize_active(dx, dy)
+    return function()
+        local size = fn.resize_active_window(dx, dy)
+        if size then
+            hl.dispatch(hl.dsp.window.resize(size))
+        end
+    end
+end
+
 -- Launcher
 hl.bind("SUPER + SUPER_L", hl.dsp.global("caelestia:launcher"), { release = true })
 
@@ -56,7 +65,7 @@ hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "+1" }))
 hl.bind(vars.kbPrevWs, hl.dsp.focus({ workspace = "e-1" }), { repeating = true })
 hl.bind(vars.kbNextWs, hl.dsp.focus({ workspace = "e+1" }), { repeating = true })
 hl.bind("SUPER + Page_Up", hl.dsp.focus({ workspace = "-1" }), { repeating = true })
-hl.bind("SUPER + Page_down", hl.dsp.focus({ workspace = "+1" }), { repeating = true })
+hl.bind("SUPER + Page_Down", hl.dsp.focus({ workspace = "+1" }), { repeating = true })
 
 -- Go to workspace group -1/+1
 hl.bind("CTRL + SUPER + mouse_down", hl.dsp.focus({ workspace = "-10" }))
@@ -93,22 +102,25 @@ hl.bind("SUPER + SHIFT + left", hl.dsp.window.move({ direction = "left" }))
 hl.bind("SUPER + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
 hl.bind("SUPER + SHIFT + up", hl.dsp.window.move({ direction = "up" }))
 hl.bind("SUPER + SHIFT + down", hl.dsp.window.move({ direction = "down" }))
-hl.bind("SUPER + Minus", hl.dsp.window.resize(fn.resize_active_window(-10, 0)), { repeating = true })
-hl.bind("SUPER + Equal", hl.dsp.window.resize(fn.resize_active_window(10, 0)), { repeating = true })
-hl.bind("SUPER + SHIFT + Minus", hl.dsp.window.resize(fn.resize_active_window(0, -10)), { repeating = true })
-hl.bind("SUPER + SHIFT + Equal", hl.dsp.window.resize(fn.resize_active_window(0, 10)), { repeating = true })
-hl.bind("SUPER + ALT + left", hl.dsp.window.resize(fn.resize_active_window(-10, 0)), { repeating = true })
-hl.bind("SUPER + ALT + right", hl.dsp.window.resize(fn.resize_active_window(10, 0)), { repeating = true })
-hl.bind("SUPER + ALT + up", hl.dsp.window.resize(fn.resize_active_window(0, -10)), { repeating = true })
-hl.bind("SUPER + ALT + down", hl.dsp.window.resize(fn.resize_active_window(0, 10)), { repeating = true })
+hl.bind("SUPER + Minus", resize_active(-10, 0), { repeating = true })
+hl.bind("SUPER + Equal", resize_active(10, 0), { repeating = true })
+hl.bind("SUPER + SHIFT + Minus", resize_active(0, -10), { repeating = true })
+hl.bind("SUPER + SHIFT + Equal", resize_active(0, 10), { repeating = true })
+hl.bind("SUPER + ALT + left", resize_active(-10, 0), { repeating = true })
+hl.bind("SUPER + ALT + right", resize_active(10, 0), { repeating = true })
+hl.bind("SUPER + ALT + up", resize_active(0, -10), { repeating = true })
+hl.bind("SUPER + ALT + down", resize_active(0, 10), { repeating = true })
 
-hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(vars.kbMoveWindow, hl.dsp.window.drag(), { mouse = true })
-hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind(vars.kbResizeWindow, hl.dsp.window.resize(), { mouse = true })
 hl.bind("CTRL + SUPER + Backslash", hl.dsp.window.center())
-hl.bind("CTRL + SUPER + ALT + Backslash", hl.dsp.window.resize(fn.resize_by_screen(55, 70)))
-hl.bind("CTRL + SUPER + ALT + Backslash", hl.dsp.window.center())
+hl.bind("CTRL + SUPER + ALT + Backslash", function()
+    local size = fn.resize_by_screen(55, 70)
+    if size then
+        hl.dispatch(hl.dsp.window.resize(size))
+    end
+    hl.dispatch(hl.dsp.window.center())
+end)
 hl.bind(vars.kbWindowPip, function()
     local a = hl.get_active_window()
     if a then
@@ -181,11 +193,7 @@ hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd(vars.sleepGestureCmd), { locked = t
 hl.bind("SUPER + V", hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard"))
 hl.bind("SUPER + ALT + V", hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard -d"))
 hl.bind("SUPER + Period", hl.dsp.exec_cmd("pkill fuzzel || caelestia emoji -p"))
-hl.bind(
-    "CTRL + SHIFT + ALT + V",
-    hl.dsp.exec_cmd('sleep 0.5s && ydotool type -d 1 "$(cliphist list | head -1 | cliphist decode)"'),
-    { locked = true }
-)
+
 
 -- Testing
 hl.bind(

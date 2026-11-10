@@ -30,6 +30,15 @@ if [[ -f "$WAL_CONF" ]]; then
             WALL_TRANSITION_DUR)
                 [[ -n "${WALL_TRANSITION_DUR:-}" ]] || WALL_TRANSITION_DUR="$_val"
                 ;;
+            WALL_TRANSITION_ANGLE)
+                [[ -n "${WALL_TRANSITION_ANGLE:-}" ]] || WALL_TRANSITION_ANGLE="$_val"
+                ;;
+            WALL_TRANSITION_STEP)
+                [[ -n "${WALL_TRANSITION_STEP:-}" ]] || WALL_TRANSITION_STEP="$_val"
+                ;;
+            WALL_TRANSITION_FPS)
+                [[ -n "${WALL_TRANSITION_FPS:-}" ]] || WALL_TRANSITION_FPS="$_val"
+                ;;
             MONITOR)
                 [[ -n "${MONITOR:-}" ]] || MONITOR="$_val"
                 ;;
@@ -56,10 +65,19 @@ FAVORITES_FILE="${HOME}/.cache/wal/favorites"
 # ─── Transición ───────────────────────────────────────────────────────────────
 TRANSITION="${WALL_TRANSITION:-wipe}"
 TRANSITION_DUR="${WALL_TRANSITION_DUR:-1}"
+TRANSITION_ANGLE="${WALL_TRANSITION_ANGLE:-45}"
+TRANSITION_STEP="${WALL_TRANSITION_STEP:-255}"
+TRANSITION_FPS="${WALL_TRANSITION_FPS:-120}"
 MONITOR="${MONITOR:-*}"
 
 # ─── Historial de pywal16 ─────────────────────────────────────────────────────
 WAL_HISTORY="${HOME}/.cache/wal/wal"
+
+# ─── Estado de wallpaper / GameMode ───────────────────────────────────────────
+LAST_MEDIA_FILE="${LAST_MEDIA_FILE:-$HOME/.cache/wal/last-media}"
+GAMEMODE_LOCK="${GAMEMODE_LOCK:-/tmp/hypr-gamemode.lock}"
+FULLSCREEN_LOCK="${FULLSCREEN_LOCK:-/tmp/hypr-fullscreen.lock}"
+WALLPAPER_LOCK="${WALLPAPER_LOCK:-/tmp/hypr-wallpaper.lock}"
 
 # ─── Flags (sobreescritos por parse_flags en flags.sh) ────────────────────────
 DO_PREVIEW="${DO_PREVIEW:-false}"
