@@ -5,7 +5,7 @@ background=assets/background.jpg
 # Colors
 primaryColor=%PRIMARY%
 accentColor=%ACCENT%
-autoColor=true
+autoColor=false
 use24HourClock=false
 backgroundColor=%BACKGROUND%
 textColor=%TEXT%

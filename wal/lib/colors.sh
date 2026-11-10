@@ -92,6 +92,31 @@ _apply_cava() {
     pkill -SIGUSR1 cava || true
 }
 
+# Devuelve los N colores más frecuentes (hex), ignorando casi-negros y casi-blancos
+_dominant_colors() {
+    local img="$1" n="${2:-3}"
+    magick "$img" -resize 200x200 -alpha off +dither -colors 12 \
+        -format %c histogram:info:- 2>/dev/null \
+    | sed -E 's/^ *([0-9]+): .*(#[0-9A-Fa-f]{6}).*/\1 \2/' \
+    | sort -rn \
+    | while read -r _ hex; do
+        local r=$((16#${hex:1:2})) g=$((16#${hex:3:2})) b=$((16#${hex:5:2}))
+        local lum=$(( (r*299 + g*587 + b*114) / 1000 ))
+        # descartar muy oscuros (<35) y muy claros (>220)
+        (( lum < 35 || lum > 220 )) && continue
+        echo "$hex"
+    done | head -n "$n"
+}
+
+# Oscurece un color hex multiplicando cada canal por un factor (0-100)
+_darken_hex() {
+    local hex="$1" pct="${2:-20}"
+    local r=$((16#${hex:1:2} * pct / 100))
+    local g=$((16#${hex:3:2} * pct / 100))
+    local b=$((16#${hex:5:2} * pct / 100))
+    printf '#%02X%02X%02X' "$r" "$g" "$b"
+}
+
 _apply_sddm() {
     local img="$1"
 
@@ -108,11 +133,18 @@ _apply_sddm() {
     fi
 
     # 2. Generar theme.conf desde la plantilla con colores de pywal16
+    local -a dom
+    mapfile -t dom < <(_dominant_colors "$img" 3)
+
+    local primary="${dom[0]:-$color4}"
+    local accent="${dom[1]:-$primary}"
+    local bg; bg="$(_darken_hex "$primary" 20)"
+
     sed \
-        -e "s/%PRIMARY%/${color4}/" \
-        -e "s/%ACCENT%/${color6}/" \
-        -e "s/%BACKGROUND%/${background}/" \
-        -e "s/%TEXT%/${foreground}/" \
+        -e "s|%PRIMARY%|${primary}|" \
+        -e "s|%ACCENT%|${accent}|" \
+        -e "s|%BACKGROUND%|${bg}|" \
+        -e "s|%TEXT%|${foreground}|" \
         "$SDDM_TPL" > "$SDDM_CACHE_CONF"
 
     # 3. Sincronizar al theme real (root, sin password)

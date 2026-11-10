@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SRC="/home/joshua/.cache/wal"
+DEST="/usr/share/sddm/themes/pixie"
+
+cp -f "$SRC/sddm_background.jpg" "$DEST/assets/background.jpg"
+cp -f "$SRC/sddm_theme.conf" "$DEST/theme.conf"
