@@ -16,7 +16,7 @@ hl.curve("standard",          { type = "bezier", points = { { 0.2, 0 },     { 0,
 hl.animation({ leaf = "windows",        enabled = true, speed = 5,  bezier = "smooth",          style = "slide" })
 hl.animation({ leaf = "windowsIn",      enabled = true, speed = 5,  bezier = "smooth",          style = "slide" })
 hl.animation({ leaf = "windowsOut",     enabled = true, speed = 3,  bezier = "emphasizedAccel" })
-hl.animation({ leaf = "windowsMove",    enabled = true, speed = 3,  bezier = "linear" })
+hl.animation({ leaf = "windowsMove",    enabled = true, speed = 5,  bezier = "smooth" })
 hl.animation({ leaf = "border",         enabled = true, speed = 12, bezier = "linear" })
 hl.animation({ leaf = "borderangle",    enabled = true, speed = 60, bezier = "linear",          style = "loop" })
 hl.animation({ leaf = "fade",           enabled = true, speed = 5,  bezier = "smooth" })
