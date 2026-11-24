@@ -54,3 +54,5 @@ fish_add_path --append $HOME/.lmstudio/bin
 set -gx PATH $PATH /home/joshua/.lmstudio/bin
 # End of LM Studio CLI section
 
+# OmniRoute:
+set -gx DATA_DIR /home/joshua/.config/omniroute
